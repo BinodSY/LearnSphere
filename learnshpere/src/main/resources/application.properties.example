@@ -1,0 +1,7 @@
+spring.application.name=learnshpere
+spring.data.mongodb.uri=https//localhost:27017/test or mongodbatlass connection string
+server.port=8080
+
+
+/
+

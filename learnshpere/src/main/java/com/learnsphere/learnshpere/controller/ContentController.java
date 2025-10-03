@@ -47,7 +47,7 @@ public class ContentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // ✅ Like content
+    // ✅ Like content increse when hitting to this end point
     @PostMapping("/{id}/like")
     public ResponseEntity<Content> likeContent(@PathVariable String id) {
         return ResponseEntity.ok(contentService.likeContent(id));
