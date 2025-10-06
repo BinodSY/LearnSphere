@@ -1,7 +1,9 @@
 package com.learnsphere.learnshpere.model;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
@@ -18,5 +20,6 @@ public class Content {
   private List<String> tags;
   private int likes;
   private int views;
+  private Set<String> likedBy = new HashSet<>();
   private Instant createdAt = Instant.now();
 }

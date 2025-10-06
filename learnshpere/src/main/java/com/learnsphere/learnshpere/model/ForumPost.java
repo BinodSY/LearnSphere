@@ -21,6 +21,7 @@ public class ForumPost {
   private String content;
   private String authorId;
   private String authorName;
+  private List<String> tags;
   private List<Comment> comments = new ArrayList<>();
   private Instant createdAt = Instant.now();
 
@@ -32,7 +33,5 @@ public class ForumPost {
     private String text;
     private Instant createdAt = Instant.now();
   }
-
-
 }
   

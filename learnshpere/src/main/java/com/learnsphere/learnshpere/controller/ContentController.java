@@ -1,11 +1,12 @@
 package com.learnsphere.learnshpere.controller;
  
 import java.util.List;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-// import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.learnsphere.learnshpere.model.Content;
+import com.learnsphere.learnshpere.model.User;
+import com.learnsphere.learnshpere.repositories.UserRepository;
 import com.learnsphere.learnshpere.service.ContentService;
 // import lombok.RequiredArgsConstructor;
 
@@ -25,10 +28,13 @@ import com.learnsphere.learnshpere.service.ContentService;
 public class ContentController {
     @Autowired
     private ContentService contentService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     // ✅ Mentor creates content
     @PostMapping
-    // @PreAuthorize("hasAuthority('MENTOR')")
+    @PreAuthorize("hasAuthority('MENTOR')")
     public ResponseEntity<Content> createContent(@RequestBody @Validated Content content) {
         return ResponseEntity.ok(contentService.createContent(content));
     }
@@ -50,6 +56,12 @@ public class ContentController {
     // ✅ Like content increse when hitting to this end point
     @PostMapping("/{id}/like")
     public ResponseEntity<Content> likeContent(@PathVariable String id) {
-        return ResponseEntity.ok(contentService.likeContent(id));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    Content updatedContent = contentService.likeContent(id, user.getId());
+    return ResponseEntity.ok(updatedContent);
     }
 }

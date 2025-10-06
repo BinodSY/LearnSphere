@@ -39,10 +39,19 @@ public class ContentService {
                 });
     }
 
-    public Content likeContent(String id) {
-        Content content = contentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Content not found"));
-        content.setLikes(content.getLikes() + 1);
-        return contentRepository.save(content);
+    public Content likeContent(String contentId, String userId) {
+        Content content = contentRepository.findById(contentId)
+            .orElseThrow(() -> new RuntimeException("Content not found"));
+
+    if (content.getLikedBy().contains(userId)) {
+        // User already liked → remove like
+        content.getLikedBy().remove(userId);
+    } else {
+        // First time like → add
+        content.getLikedBy().add(userId);
+    }
+    // Update total likes count
+    content.setLikes(content.getLikedBy().size());
+    return contentRepository.save(content);
     }
 }
